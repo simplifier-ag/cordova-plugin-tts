@@ -27,6 +27,7 @@ import android.content.Context;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.util.Log;
 
 /*
     Cordova Text-to-Speech Plugin
@@ -96,26 +97,30 @@ public class TTS extends CordovaPlugin implements OnInitListener {
 
     @Override
     public void onInit(int status) {
-        if (status != TextToSpeech.SUCCESS) {
-            tts = null;
-        } else {
-            // warm up the tts engine with an empty string
-            HashMap<String, String> ttsParams = new HashMap<String, String>();
-            ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "");
-            tts.setLanguage(new Locale("en", "US"));
-            tts.speak("", TextToSpeech.QUEUE_FLUSH, ttsParams);
+        try {
+            if (status != TextToSpeech.SUCCESS) {
+                tts = null;
+            } else {
+                // warm up the tts engine with an empty string
+                HashMap<String, String> ttsParams = new HashMap<String, String>();
+                ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "");
+                tts.setLanguage(new Locale("en", "US"));
+                tts.speak("", TextToSpeech.QUEUE_FLUSH, ttsParams);
 
-            ttsInitialized = true;
+                ttsInitialized = true;
+            }
+        } catch (Exception e) {
+            Log.e(TTS.class.getSimpleName(), e.getMessage(), e);
         }
     }
 
     private void stop(JSONArray args, CallbackContext callbackContext)
-      throws JSONException, NullPointerException {
+            throws JSONException, NullPointerException {
         tts.stop();
     }
 
     private void callInstallTtsActivity(JSONArray args, CallbackContext callbackContext)
-      throws JSONException, NullPointerException {
+            throws JSONException, NullPointerException {
 
         PackageManager pm = context.getPackageManager();
         Intent installIntent = new Intent();
@@ -123,16 +128,16 @@ public class TTS extends CordovaPlugin implements OnInitListener {
         ResolveInfo resolveInfo = pm.resolveActivity( installIntent, PackageManager.MATCH_DEFAULT_ONLY );
 
         if( resolveInfo == null ) {
-           // Not able to find the activity which should be started for this intent
+            // Not able to find the activity which should be started for this intent
         } else {
-          installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          context.startActivity(installIntent);
+            installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(installIntent);
         }
     }
 
 
     private void checkLanguage(JSONArray args, CallbackContext callbackContext)
-      throws JSONException, NullPointerException {
+            throws JSONException, NullPointerException {
         Set<Locale> supportedLanguages = tts.getAvailableLanguages();
         String languages = "";
         if(supportedLanguages!= null) {
