@@ -42,6 +42,7 @@
     NSString* text = [options objectForKey:@"text"];
     NSString* locale = [options objectForKey:@"locale"];
     double rate = [[options objectForKey:@"rate"] doubleValue];
+    double pitch = [[options objectForKey:@"pitch"] doubleValue];
     NSString* category = [options objectForKey:@"category"];
     
     [[AVAudioSession sharedInstance] setActive:NO withOptions:0 error:nil];
@@ -61,12 +62,6 @@
     
     [synthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     
-    options = [command.arguments objectAtIndex:0];
-    
-    text = [options objectForKey:@"text"];
-    locale = [options objectForKey:@"locale"];
-    rate = [[options objectForKey:@"rate"] doubleValue];
-    double pitch = [[options objectForKey:@"pitch"] doubleValue];
     
     if (!locale || (id)locale == [NSNull null]) {
         locale = @"en-US";
