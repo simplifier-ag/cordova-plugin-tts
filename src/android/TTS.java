@@ -48,11 +48,9 @@ public class TTS extends CordovaPlugin implements OnInitListener {
 
     boolean ttsInitialized = false;
     TextToSpeech tts = null;
-    Context context = null;
 
     @Override
     public void initialize(CordovaInterface cordova, final CordovaWebView webView) {
-        context = cordova.getActivity().getApplicationContext();
         tts = new TextToSpeech(cordova.getActivity().getApplicationContext(), this);
         tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
@@ -119,9 +117,16 @@ public class TTS extends CordovaPlugin implements OnInitListener {
         tts.stop();
     }
 
+    @Override
+    public void onDestroy() {
+        tts.setOnUtteranceProgressListener(null);
+        tts = null;
+        super.onDestroy();
+    }
+
     private void callInstallTtsActivity(JSONArray args, CallbackContext callbackContext)
             throws JSONException, NullPointerException {
-
+        Context context = cordova.getContext();
         PackageManager pm = context.getPackageManager();
         Intent installIntent = new Intent();
         installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
