@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-tts",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Cordova Text-to-Speech Plugin",
   "cordova": {
     "id": "cordova-plugin-tts",
